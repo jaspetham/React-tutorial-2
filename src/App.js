@@ -8,6 +8,7 @@ import AboutPage from './AboutPage';
 import Missing from './Missing';
 import {Route,Routes,useNavigate} from 'react-router-dom';
 import { useState,useEffect } from 'react';
+import {format} from 'date-fns';
 
 function App() {
   const [posts,setPosts] = useState([
@@ -37,13 +38,27 @@ function App() {
     }
   ]);
   const [search, setSearch] = useState('');
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
   const history = useNavigate();
 
-  const handleSubmit = () => {
-    
+  useEffect(() => {
+      const filteredSearchResults = posts.filter((post) => 
+        ((post.body).toLowerCase()).includes(search.toLowerCase())
+        || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+      setSearchResults(filteredSearchResults.reverse());
+  },[posts,search])
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(),'MMMM dd, yyyy pp');
+    const newPost = {id,title:postTitle,datetime,body:postBody};
+    const allPosts = [...posts, newPost];
+    setPosts(allPosts);
+    setPostTitle('');
+    setPostBody('');
+    history('/');
   }
 
   const handleDelete = (id) => {
@@ -60,7 +75,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={
           <Home 
-            posts = {posts}/>
+            posts = {searchResults}/>
         }/>
         <Route exact path="/post" element={
           <NewPost

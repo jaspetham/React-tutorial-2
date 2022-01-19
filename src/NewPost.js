@@ -13,6 +13,7 @@ const NewPost = ({
                 <input type="text" name="postTitle" id="postTitle" required value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
                 <label htmlFor="postBody">Body:</label>
                 <textarea name="postBody" id="postBody" required value={postBody} onChange={(e) => setPostBody(e.target.value)} />
+                <button type="submit">Submit</button>
             </form>
         </main>
     )
